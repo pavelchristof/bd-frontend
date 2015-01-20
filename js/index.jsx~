@@ -1,0 +1,4 @@
+var url = require('url');
+var parts = url.parse(window.location);
+
+console.log(parts);
