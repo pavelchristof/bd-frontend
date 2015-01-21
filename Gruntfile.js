@@ -10,11 +10,12 @@ module.exports = function(grunt) {
     // Browserify and React.js
     browserify: {
       options: {
-        transform: ['reactify']
+        transform: ['reactify'],
+        extensions: '.jsx'
       },
       app: {
-        src: 'js/index.js',
-        dest: 'dist/index.js'
+        src: 'jsx/index.jsx',
+        dest: 'dist/js/index.js'
       }
     },
 
@@ -22,20 +23,28 @@ module.exports = function(grunt) {
     less: {
       app: {
         files: {
-          'dist/index.css': 'less/index.less'
+          'dist/css/index.css': 'less/index.less'
         }
       }
     },
 
     // Html
     copy: {
-      main: {
+      html: {
         expand: true,
         cwd: 'html/',
         src: '**',
         dest: 'dist/'
+      },
+      fonts: {
+        expand: true,
+        cwd: 'node_modules/bootstrap/fonts/',
+        src: '**',
+        dest: 'dist/fonts/'
       }
     },
+
+    // Fonts
 
     // Watch
     watch: {
@@ -44,11 +53,11 @@ module.exports = function(grunt) {
         tasks: ['less']
       },
       scripts: {
-        files: ['js/**/*.js'],
+        files: ['jsx/**/*.jsx'],
         tasks: ['browserify']
       },
       htmls: {
-        files: ['html/*'],
+        files: ['html/**', 'node_modules/bootstrap/fonts/**'],
         tasks: ['copy']
       },
       options: {
