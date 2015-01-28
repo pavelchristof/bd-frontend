@@ -10,7 +10,7 @@ module.exports = function(grunt) {
     // Browserify and React.js
     browserify: {
       options: {
-        transform: ['reactify'],
+        transform: [[{es6: true}, 'reactify']],
         extensions: '.jsx'
       },
       app: {
