@@ -10,6 +10,7 @@ var Types = React.createClass({
     return {
       classes: [],
       enums: [],
+      inherits: [],
       creating: false,
       editing: null
     };
@@ -17,11 +18,17 @@ var Types = React.createClass({
 
   componentDidMount: function() {
     this.reload();
+    Api.reloadsStack.push(this.reload);
+  },
+
+  componentWillUnmount: function() {
+    Api.reloadsStack.pop();
   },
 
   reload: function() {
     Api.get(['classes'], this.setClasses);
     Api.get(['enums'], this.setEnums);
+    Api.get(['rels', 'inherits'], this.setInherits);
   },
 
   setClasses: function(data) {
@@ -30,6 +37,10 @@ var Types = React.createClass({
 
   setEnums: function(data) {
     this.setState({ enums: data });
+  },
+
+  setInherits: function(data) {
+    this.setState({ inherits: data });
   },
 
   setCreating: function(cr) {
@@ -52,7 +63,8 @@ var Types = React.createClass({
     if (this.state.editing == null) {
       return this.renderList();
     } else if (this.state.editing.what == 'class') {
-      return <ClassEditor cl={this.state.editing.target} onExit={this.clearEditing} />;
+      var cl = this.state.editing.target;
+      return <ClassEditor cl={cl} parents={this.parents(cl.type.name)} onExit={this.clearEditing} />;
     } else if (this.state.editing.what == 'enum') {
       return <EnumViewer e={this.state.editing.target} onExit={this.clearEditing} />;
     }
@@ -112,11 +124,13 @@ var Types = React.createClass({
 
   renderClass: function(cl) {
     var ed = { what: 'class', target: cl };
+    var parents = this.parents(cl.type.name);
     return (
       <li key={cl.type.name} className="list-group-item">
         <a onClick={this.setEditing.bind(this, ed)}>
           {cl.isStruct ? 'struct ' : 'class '}
           {cl.type.name}
+          {parents.length > 0 ? this.renderParents(parents) : null}
         </a>
         <span className="pull-right">
           <button type="button" class="btn btn-default"
@@ -126,6 +140,14 @@ var Types = React.createClass({
           </button>
         </span>
       </li>
+    );
+  },
+
+  renderParents: function(p) {
+    return (
+      <span>
+        &nbsp;: {p.join(', ')}
+      </span>
     );
   },
 
@@ -159,6 +181,16 @@ var Types = React.createClass({
       if (ans)
         Api.delete(['enums', e.type.name], this.reload);
     }.bind(this));
+  },
+
+  parents: function(of) {
+    var p = [];
+    this.state.inherits.forEach(i => {
+      if (i[0] == of) {
+        p.push(i[1]);
+      }
+    });
+    return p;
   }
 });
 

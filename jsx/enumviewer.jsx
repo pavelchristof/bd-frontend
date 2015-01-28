@@ -15,19 +15,26 @@ var EnumViewer = React.createClass({
       </button>
     );
 
-    return (
+    return (<div>
       <div className="panel panel-default">
         <div className="panel-heading">
           <span className="pull-right">{button}</span>
           <h5>
-            Enum {this.props.e.type.name} {this.props.e.items.length > 0 ? 'items:' : 'has no items.'}
+            Enum {this.props.e.type.name}.
+            {this.props.e.type.decl.file != null ? ' Declared at ' + this.props.e.type.decl.file + '.' : null}
           </h5>
+        </div>
+      </div>
+
+      <div className="panel panel-default">
+        <div className="panel-heading">
+          <h5>Items</h5>
         </div>
         <ul className="list-group">
           {this.props.e.items.map(i => <li key={i} className="list-group-item">{i}</li>)}
         </ul>
       </div>
-    );
+    </div>);
   },
 });
 

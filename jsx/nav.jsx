@@ -29,7 +29,7 @@ var Nav = React.createClass({
       <nav className="navbar navbar-inverse navbar-fixed-top">
         <div className="container-fluid">
           <div className="navbar-header">
-            <a className="navbar-brand">Databases</a>
+            <a className="navbar-brand">Database</a>
           </div>
           <ul className="nav navbar-nav navbar-right">
             {content}

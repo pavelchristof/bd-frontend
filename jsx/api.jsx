@@ -33,6 +33,12 @@ var Api = {
     }), callback);
   },
 
+  // Horrible hack, but i don't have time to do it correctly.
+  forceReload: function() {
+    this.reloadsStack.forEach(r => r());
+  },
+  reloadsStack: [],
+
   _handle: function(request, callback) {
     request
       .done(function (data) {

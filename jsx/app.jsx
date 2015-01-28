@@ -3,6 +3,7 @@ var Api = require('./api.jsx');
 var Nav = require('./nav.jsx');
 var Auth = require('./auth.jsx');
 var Types = require('./types.jsx');
+var Rels = require('./rels.jsx');
 
 var App = React.createClass({
   getInitialState: function() {
@@ -23,7 +24,8 @@ var App = React.createClass({
       content = <Auth onLogin={this.login} onRegister={this.register} />;
     } else {
       content = [
-        <Types />
+        <Types />,
+        <Rels />
       ];
     }
 
