@@ -10,7 +10,7 @@ $.ajaxPrefilter( function( options, originalOptions, jqXHR ) {
 });
 
 var Api = {
-  root: "http://localhost:3000/",
+  root: "http://students.mimuw.edu.pl/~pn347193/cgi-bin/bd/",
 
   onError: function(message) {
     alert(message);
