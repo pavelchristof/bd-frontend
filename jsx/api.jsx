@@ -26,6 +26,13 @@ var Api = {
     this._handle($.post(url, data), callback);
   },
 
+  delete: function(parts, callback) {
+    var url = this.root + parts.join('/');
+    this._handle($.ajax(url, {
+      type: 'DELETE'
+    }), callback);
+  },
+
   _handle: function(request, callback) {
     request
       .done(function (data) {

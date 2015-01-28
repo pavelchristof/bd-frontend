@@ -2,6 +2,7 @@ var React = require('react');
 var Api = require('./api.jsx');
 var Nav = require('./nav.jsx');
 var Auth = require('./auth.jsx');
+var Types = require('./types.jsx');
 
 var App = React.createClass({
   getInitialState: function() {
@@ -21,7 +22,9 @@ var App = React.createClass({
     if (this.state.username == null) {
       content = <Auth onLogin={this.login} onRegister={this.register} />;
     } else {
-      content = null;
+      content = [
+        <Types />
+      ];
     }
 
     var alert = null;
