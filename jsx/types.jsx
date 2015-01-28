@@ -126,14 +126,14 @@ var Types = React.createClass({
     var ed = { what: 'class', target: cl };
     var parents = this.parents(cl.type.name);
     return (
-      <li key={cl.type.name} className="list-group-item">
+      <li key={cl.type.name} className="list-group-item clearfix">
         <a onClick={this.setEditing.bind(this, ed)}>
           {cl.isStruct ? 'struct ' : 'class '}
           {cl.type.name}
           {parents.length > 0 ? this.renderParents(parents) : null}
         </a>
         <span className="pull-right">
-          <button type="button" class="btn btn-default"
+          <button type="button" className="btn btn-default"
                   onClick={this.deleteClass.bind(this, cl)}>
             <span className="glyphicon glyphicon-remove" />
             Delete
@@ -154,12 +154,12 @@ var Types = React.createClass({
   renderEnum: function(e) {
     var ed = { what: 'enum', target: e };
     return (
-      <li key={e.type.name} className="list-group-item">
+      <li key={e.type.name} className="list-group-item clearfix">
       <a onClick={this.setEditing.bind(this, ed)}>
         enum {e.type.name}
       </a>
       <span className="pull-right">
-        <button type="button" class="btn btn-default"
+        <button type="button" className="btn btn-default"
                 onClick={this.deleteEnum.bind(this, e)}>
           <span className="glyphicon glyphicon-remove" />
           Delete

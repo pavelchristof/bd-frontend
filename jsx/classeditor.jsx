@@ -19,6 +19,7 @@ var ClassEditor = React.createClass({
       writers: [],
 
       selectedMethod: null,
+      callers: [],
 
       creatingField: false,
       creatingMethod: false
@@ -39,6 +40,10 @@ var ClassEditor = React.createClass({
 
   setWriters: function(data) {
     this.setState({ writers: data });
+  },
+
+  setCallers: function(data) {
+    this.setState({ callers: data });
   },
 
   switchCreatingField: function() {
@@ -73,6 +78,7 @@ var ClassEditor = React.createClass({
       this.setState({ selectedMethod: null });
     } else {
       this.setState({ selectedMethod: val });
+      Api.get(['method', val, 'callers'], this.setCallers);
     }
   },
 
@@ -84,6 +90,11 @@ var ClassEditor = React.createClass({
     if (val != null) {
       Api.get(['classes', this.props.cl.type.name, 'fields', val, 'readers'], this.setReaders);
       Api.get(['classes', this.props.cl.type.name, 'fields', val, 'writers'], this.setWriters);
+    }
+
+    val = this.state.selectedMethod;
+    if (val != null) {
+      Api.get(['method', val, 'callers'], this.setCallers);
     }
   },
 
@@ -161,7 +172,15 @@ var ClassEditor = React.createClass({
     }
 
     return (
-      <li className="list-group-item" key={f.value.ident}>
+      <li className="list-group-item clearfix" key={f.value.ident}>
+        <span className="pull-right">
+          <button type="button" className="btn btn-default"
+                  onClick={this.deleteField.bind(this, f)}>
+            <span className="glyphicon glyphicon-remove" />
+            Delete
+          </button>
+        </span>
+
         <a onClick={this.switchSelectedField.bind(this, f.value.ident)}>
           {f.static ? <em>static </em> : null}
           <span style={{color: 'blue'}}>{f.type} </span>
@@ -233,17 +252,36 @@ var ClassEditor = React.createClass({
   },
 
   renderMethod: function(m) {
+    var callers = null;
+    if (this.state.selectedMethod == m.id) {
+      callers = (
+        <div>
+          Callers
+          <ul>
+            { this.state.callers.map(i => <li key={i}>{i}</li>) }
+          </ul>
+        </div>
+      );
+    }
+
     return (
-      <li className="list-group-item" key={m.id}>
+      <li className="list-group-item clearfix" key={m.id}>
         <span className="pull-right">
-          Id: {m.id}
+          <span>Id: {m.id} </span>
+          <button type="button" className="btn btn-default"
+                  onClick={this.deleteMethod.bind(this, m)}>
+            <span className="glyphicon glyphicon-remove" />
+            Delete
+          </button>
         </span>
+
         <a onClick={this.switchSelectedMethod.bind(this, m.id)}>
           {m.static ? <em>static </em> : null}
           <span style={{color: 'blue'}}>{m.returnType} </span>
           <strong>{m.value.ident}</strong>
           ( {m.argTypes.join(', ')} )
         </a>
+        {callers}
       </li>
     );
   },
@@ -290,6 +328,29 @@ var ClassEditor = React.createClass({
   createMethod: function() {
     var data = $(this.refs.methodForm.getDOMNode()).serialize();
     Api.post(['classes', this.props.cl.type.name, 'methods'], data, this.reload);
+  },
+
+  deleteField: function(f) {
+    bootbox.confirm("Are you sure?", function(res) {
+      if (res)
+        Api.delete(['classes', this.props.cl.type.name, 'fields', f.value.ident], function() {
+          if (this.state.selectedField == f.value.ident) {
+            switchSelectedField(f.value.ident);
+          }
+          this.reload();
+        }.bind(this));
+    }.bind(this));
+  },
+
+  deleteMethod: function(m) {
+    bootbox.confirm("Are you sure?", function(res) {
+      if (res)
+        Api.delete(['method', m.id], function() {
+          if (this.state.selectedMethod == m.id)
+            switchSelectedMethod(m.id);
+          this.reload();
+         }.bind(this));
+    }.bind(this));
   }
 });
 
